@@ -1,17 +1,19 @@
-import { Injectable } from '@nestjs/common';
-import { DockerService } from './docker/docker.service';
+import { Injectable, Logger } from '@nestjs/common';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import {
-  ASSUME_LABEL,
   LOWER_THRESHOLD,
   MAX_LABEL,
   MIN_LABEL,
   UPPER_THRESHOLD,
 } from './constants';
+import { DockerService } from './docker/docker.service';
 import { PromService } from './prom/prom.service';
 import { log } from 'console';
 
 @Injectable()
 export class AppService {
+  private logger = new Logger(AppService.name);
+
   constructor(
     private readonly docker: DockerService,
     private readonly prom: PromService,
@@ -25,7 +27,9 @@ export class AppService {
     return this.docker.getService('test-stack_hello');
   }
 
+  @Cron(CronExpression.EVERY_30_SECONDS)
   async handle() {
+    this.logger.log('Starting check');
     // do the logic here
     const metrics = await this.getMetrics();
 
@@ -35,6 +39,7 @@ export class AppService {
         const serviceName =
           singleMetric.metric.container_label_com_docker_swarm_service_name;
         const service = await this.docker.getService(serviceName);
+        this.logger.verbose('Found service: ' + serviceName);
         // service does not exist or label is not set to enable scaling
         if (!service.length) return;
         const labels = service[0].Spec.Labels;
@@ -49,20 +54,26 @@ export class AppService {
         const minCount = Number(labels[MIN_LABEL]);
         const maxCount = Number(labels[MAX_LABEL]);
 
-        if (lowerThreshold < metric && currentReplicaCount > minCount) {
+        if (metric < lowerThreshold && currentReplicaCount > minCount) {
           // scale down
-          this.docker.scaleService(serviceName, currentReplicaCount - 1);
+          await this.docker.scaleService(serviceName, currentReplicaCount - 1);
+          this.logger.log(
+            `Scaled service ${serviceName} from ${currentReplicaCount} to ${
+              currentReplicaCount - 1
+            }`,
+          );
         }
 
-        if (upperThreshold < metric && currentReplicaCount < maxCount) {
+        if (metric > upperThreshold && currentReplicaCount < maxCount) {
           // scale up
-          this.docker.scaleService(serviceName, currentReplicaCount + 1);
+          await this.docker.scaleService(serviceName, currentReplicaCount + 1);
+          this.logger.log(
+            `Scaled service ${serviceName} from ${currentReplicaCount} to ${
+              currentReplicaCount + 1
+            }`,
+          );
         }
 
-        console.log();
-
-        console.log(singleMetric, labels, service[0].Spec.Mode);
-        //
         return service;
       }),
     );
