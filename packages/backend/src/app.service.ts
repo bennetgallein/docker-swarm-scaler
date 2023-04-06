@@ -8,7 +8,6 @@ import {
 } from './constants';
 import { DockerService } from './docker/docker.service';
 import { PromService } from './prom/prom.service';
-import { log } from 'console';
 
 @Injectable()
 export class AppService {
@@ -39,11 +38,13 @@ export class AppService {
         const serviceName =
           singleMetric.metric.container_label_com_docker_swarm_service_name;
         const service = await this.docker.getService(serviceName);
-        this.logger.verbose('Found service: ' + serviceName);
         // service does not exist or label is not set to enable scaling
         if (!service.length) return;
-        const labels = service[0].Spec.Labels;
-        const currentReplicaCount = service[0].Spec.Mode.Replicated.Replicas;
+        const singleService = service[0];
+        if (!singleService.Spec.Mode.Replicated) return;
+        this.logger.verbose('Found replicated service: ' + serviceName);
+        const labels = singleService.Spec.Labels;
+        const currentReplicaCount = singleService.Spec.Mode.Replicated.Replicas;
 
         // check if current metric is either above or below the configured threshold
         const metric = Number(singleMetric.value[1]);

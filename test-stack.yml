@@ -4,13 +4,19 @@ services:
     image: jwilder/whoami
     deploy:
       mode: replicated
-      replicas: 15
+      replicas: 1
       labels:
         "balancer.enable": "true"
         "balancer.scale.max.count": 5
         "balancer.scale.min.count": 1
         "balancer.scale.threshold.cpu.lower": 25
         "balancer.scale.threshold.cpu.upper": 85
+  hello2:
+    image: jwilder/whoami
+    deploy:
+      mode: replicated
+      replicas: 1
+
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.47.0
     volumes:
