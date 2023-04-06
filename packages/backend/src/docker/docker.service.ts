@@ -7,6 +7,7 @@ import { ASSUME_LABEL } from 'src/constants';
 export class DockerService {
   private service: Docker;
   constructor(private readonly config: ConfigService) {
+    // load from docker socket, needs binding
     this.service = new Docker({ socketPath: '/var/run/docker.sock' });
   }
 
