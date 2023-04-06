@@ -9,8 +9,8 @@ services:
         "balancer.enable": "true"
         "balancer.scale.max.count": 5
         "balancer.scale.min.count": 1
-        "balancer.scale.threshold.lower": 25
-        "balancer.scale.threshold.upper": 85
+        "balancer.scale.threshold.cpu.lower": 25
+        "balancer.scale.threshold.cpu.upper": 85
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.47.0
     volumes:
