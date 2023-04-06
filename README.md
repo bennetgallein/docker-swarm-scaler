@@ -39,7 +39,7 @@ To enable auto-scaling, use the following labels on a service:
 
 Please open a new [Issue](https://github.com/bennetgallein/docker-swarm-scaler/issues/new) and describe what you want.
 
-### Roadmap / planned Features
+### Roadmap / Planned Features
 
 - [ ] RAM based scaling strategy
 - [ ] Enable the usage of other/external metrics (like req/s for Webservices, queries/s for databases, etc.)
