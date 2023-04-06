@@ -18,7 +18,11 @@ export class DockerService {
    * @returns something
    */
   public async scaleService(target: string, count: number) {
-    const result = await this.service.getService(target).update({
+    const service = await this.getService(target);
+
+    const result = await this.service.getService(service[0].ID).update({
+      version: service[0].Version.Index,
+      ...service[0].Spec,
       Mode: {
         Replicated: {
           Replicas: count,

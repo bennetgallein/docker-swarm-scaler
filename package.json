@@ -5,9 +5,5 @@
     "@types/cron": "^2.0.1",
     "lerna": "^5.1.4"
   },
-  "dependencies": {
-    "@nestjs/config": "^2.3.1",
-    "@nestjs/schedule": "^2.2.1",
-    "dockerode": "^3.3.5"
-  }
+  "dependencies": {}
 }
