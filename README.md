@@ -27,13 +27,13 @@ scale-service:
 
 To enable auto-scaling, use the following labels on a service:
 
-| name                               | value         | description                                                                                                    |
-| ---------------------------------- | ------------- | -------------------------------------------------------------------------------------------------------------- |
-| balancer.enable                    | true \| false | basic toggle wether to enable or disable balancing                                                             |
-| balancer.scale.min.count           | Number        | the minimal number of containers that need to be kept. Scaling wont happen below this number                   |
-| balancer.scale.max.count           | Number        | the maximal number of containers that are allowed to run. Scaling up won't happen after this number is reached |
-| balancer.scale.threshold.cpu.lower | Number        | the lower cpu-usage threshold that needs to be crossed before a service is considered to be scaled down.       |
-| balancer.scale.threshold.cpu.upper | Number        | the cpu-usage threshold that needs to be crossed before a container will be considered to be scaled up.        |
+| name                               | value   | description                                                                                                    |
+| ---------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------- |
+| balancer.enable                    | Boolean | basic toggle wether to enable or disable balancing                                                             |
+| balancer.scale.min.count           | Number  | the minimal number of containers that need to be kept. Scaling wont happen below this number                   |
+| balancer.scale.max.count           | Number  | the maximal number of containers that are allowed to run. Scaling up won't happen after this number is reached |
+| balancer.scale.threshold.cpu.lower | Number  | the lower cpu-usage threshold that needs to be crossed before a service is considered to be scaled down.       |
+| balancer.scale.threshold.cpu.upper | Number  | the cpu-usage threshold that needs to be crossed before a container will be considered to be scaled up.        |
 
 ### Issues & Feature Requests
 
