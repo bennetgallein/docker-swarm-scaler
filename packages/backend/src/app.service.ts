@@ -8,6 +8,7 @@ import {
 } from './constants';
 import { DockerService } from './docker/docker.service';
 import { PromService } from './prom/prom.service';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AppService {
@@ -16,6 +17,7 @@ export class AppService {
   constructor(
     private readonly docker: DockerService,
     private readonly prom: PromService,
+    private readonly config: ConfigService,
   ) {}
 
   async getMetrics() {
@@ -42,8 +44,21 @@ export class AppService {
         if (!service.length) return;
         const singleService = service[0];
         if (!singleService.Spec.Mode.Replicated) return;
-        this.logger.verbose('Found replicated service: ' + serviceName);
         const labels = singleService.Spec.Labels;
+
+        // check if
+        const a = this.config.get('TARGET_LABEL');
+        if (a) {
+          const [label, value] = a.split('=');
+          if (labels[label] != value) {
+            this.logger.verbose(
+              `Found service: ${serviceName} but no label "${label}" with value "${value}" set, so out of reach`,
+            );
+            return;
+          }
+        }
+
+        this.logger.verbose('Found replicated service: ' + serviceName);
         const currentReplicaCount = singleService.Spec.Mode.Replicated.Replicas;
 
         // check if current metric is either above or below the configured threshold

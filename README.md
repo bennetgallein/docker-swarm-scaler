@@ -25,11 +25,24 @@ scale-service:
         - node.role == manager
 ```
 
+### Environment variables
+
+Set the following env-variables to the containers:
+
+| name         | description                                                  |
+| ------------ | ------------------------------------------------------------ |
+| PROM_URL     | the hostname of the prometheus container                     |
+| PROM_PORT    | the port of the prometheus API                               |
+| TARGET_LABEL | the target label and value. e.g. "balancer.target-stage=dev" |
+
+### Service Labels
+
 To enable auto-scaling, use the following labels on a service:
 
 | name                               | value   | description                                                                                                    |
 | ---------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------- |
 | balancer.enable                    | Boolean | basic toggle wether to enable or disable balancing                                                             |
+| balancer.target                    | String  | Only handle services that have this specific tag set with a certain value                                      |
 | balancer.scale.min.count           | Number  | the minimal number of containers that need to be kept. Scaling wont happen below this number                   |
 | balancer.scale.max.count           | Number  | the maximal number of containers that are allowed to run. Scaling up won't happen after this number is reached |
 | balancer.scale.threshold.cpu.lower | Number  | the lower cpu-usage threshold that needs to be crossed before a service is considered to be scaled down.       |
