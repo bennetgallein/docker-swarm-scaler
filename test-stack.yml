@@ -11,6 +11,7 @@ services:
         "balancer.scale.min.count": 1
         "balancer.scale.threshold.cpu.lower": 25
         "balancer.scale.threshold.cpu.upper": 85
+        "balancer.target-stage": 'dev'
   hello2:
     image: jwilder/whoami
     deploy:
